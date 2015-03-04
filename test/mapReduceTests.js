@@ -42,9 +42,21 @@ exports.runMapReduce = function(test){
 	var mapReducer = new MapReducer(map,reduce);
 	var outputData = mapReducer.run(inputData);
 
-	//console.log(JSON.stringify(outputData));
+	//console.log(JSON.stringify(outputData, null, '\t'));
 
-	test.deepEqual(outputData, {"100":{"cost":5},"200":{"cost":4}});
+	var expectedData = [{
+		_id: "100",
+		value: {
+			cost:5
+		}
+	},{
+		_id: "200",
+		value:{
+			cost:4
+		}
+	}];
+
+	test.deepEqual(outputData, expectedData);
 
 	test.done();
 };

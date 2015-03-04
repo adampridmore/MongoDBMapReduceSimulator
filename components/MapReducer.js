@@ -46,10 +46,23 @@ var MapReducer = function(map,reduce){
 		return reducedValues;
 	};
 
+	var mapReducedValuesToRows = function(reducedValues){
+		var rows = [];
+		for(key in reducedValues){
+			var value = reducedValues[key];
+			rows.push({
+				_id: key, 
+				value: value
+			});
+		}
+		return rows;
+	}
+
 	this.run = function(inputRows){
 		var keyValues = mapRowsToKeyValues(inputRows);
 		var groupedKeyValues = groupByKeys(keyValues);
-		return reduceValues(groupedKeyValues);
+		var reducedValues = reduceValues(groupedKeyValues);
+		return mapReducedValuesToRows(reducedValues);
 	};
 };
 
