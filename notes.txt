@@ -1,0 +1,17 @@
+Run tests
+=========
+
+nodeunit
+
+Debug
+=====
+
+Run node-inspector in another shell.
+	node-inspector
+
+Run node with debugging enabled with nodeunit.
+	node --debug-brk node_modules\nodeunit\bin\nodeunit test\mapReduceTests.js
+	
+Connect the Chrome debugger by browsing to:
+	http://localhost:8080/debug?port=5858
+	
