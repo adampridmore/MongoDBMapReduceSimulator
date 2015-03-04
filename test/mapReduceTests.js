@@ -1,12 +1,6 @@
 var MapReducer = require('../components/MapReducer.js');
 
-exports.test1 = function(test){
-	test.expect(1);
-	test.equal(true,true);
-	test.done();
-};
-
-exports.test2 = function(test){
+exports.runMapReduce = function(test){
 	debugger;
 
 	test.expect(1);
@@ -14,49 +8,43 @@ exports.test2 = function(test){
 	var map = function(){
 		var key = this.orderNumber;
 		var value = {
-			productCount: 1
+			cost: this.cost
 		};
 
 		emit(key, value);
 	};
 
-	var reduce = function(){
+	var reduce = function(key, values){
+		var reducedValues = {
+			cost: 0
+		};
+		values.forEach(function(value){
+			reducedValues.cost += value.cost;
+		});
 
+		return reducedValues;
 	};
-
-	var mapReducer = new MapReducer(map,reduce);
 
 	var inputData = [{
-		orderNumber: 100,
-		productNumber: 'abc',
-		productQuantity: 2
+		orderNumber: "100",
+		productNumber: 'a',
+		cost: 2
 	},{
-		orderNumber: 100,
-		productNumber: 'def',
-		productQuantity: 3
+		orderNumber: "100",
+		productNumber: 'b',
+		cost: 3
+	},{
+		orderNumber: "200", 
+		productNumber: 'c',
+		cost: 4
 	}];
 
+	var mapReducer = new MapReducer(map,reduce);
 	var outputData = mapReducer.run(inputData);
 
-	console.log(JSON.stringify(outputData));
+	//console.log(JSON.stringify(outputData));
 
-	test.equal(1, outputData.length);
-
-	test.done();
-};
-
-exports.test3 = function(test){
-	var module = {
-		x: 11
-	};
-
-	var myFunction = function(){
-		console.log(this.x);
-	};
-
-	var myNewFunction = myFunction.bind(module);
-
-	myNewFunction();
+	test.deepEqual(outputData, {"100":{"cost":5},"200":{"cost":4}});
 
 	test.done();
 };
