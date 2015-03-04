@@ -1,6 +1,6 @@
 
 var MapReducer = function(map,reduce){
-	var mapRowsToKeyValues = function(map, reduce, inputData){
+	var mapRowsToKeyValues = function(inputData){
 		var mappedKeyValues = [];
 		inputData.forEach(function(inputRow){
 			GLOBAL.emit = function(key,value){
@@ -18,23 +18,23 @@ var MapReducer = function(map,reduce){
 		return mappedKeyValues;
 	};
 
-	var group = function(mappedKeyValues){
-		var grouped = {};
+	var groupByKeys = function(keyValues){
+		var groupedKeyValues = {};
 
-		mappedKeyValues.forEach(function(keyValue){
-			var values = grouped[keyValue.key];
+		keyValues.forEach(function(keyValue){
+			var values = groupedKeyValues[keyValue.key];
 			if (values === undefined){
 				values = [keyValue.value];
-				grouped[keyValue.key] = values;
-			}else{
+				groupedKeyValues[keyValue.key] = values;
+			} else {
 				values.push(keyValue.value);
 			}
 		});
 
-		return grouped;
+		return groupedKeyValues;
 	};
 
-	var reducer = function(groupedValues){
+	var reduceValues = function(groupedValues){
 		var reducedValues = {};
 		
 		for(var key in groupedValues){
@@ -46,14 +46,10 @@ var MapReducer = function(map,reduce){
 		return reducedValues;
 	};
 
-	this.run = function(inputData){
-		var mappedKeyValues = mapRowsToKeyValues(map, reduce, inputData);
-
-		var groupedKeyValues = group(mappedKeyValues);
-
-		var reducedValues = reducer(groupedKeyValues);
-
-		return reducedValues;
+	this.run = function(inputRows){
+		var keyValues = mapRowsToKeyValues(inputRows);
+		var groupedKeyValues = groupByKeys(keyValues);
+		return reduceValues(groupedKeyValues);
 	};
 };
 
